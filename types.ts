@@ -1,15 +1,14 @@
 /**
- * Terms and aliases:
+ * Terms and aliases in different UI libraries:
  * contained = filled
  * outlined = bordered
  * standard = default
- * severity = color?
+ * intent = severity
  * pill = rectangle (rounded or not - by design)
- * children = content?
- * default = text
+ * children = content (or named slots)
  */
-export type ComponentType = (props: any) => unknown;
-export type Slot = ReturnType<ComponentType>;
+export type Component = (props: any) => unknown;
+export type Slot = ReturnType<Component>;
 export type Style = object;
 
 export type CamelCase<S extends string> = S extends `${infer T}${infer U}`
@@ -23,7 +22,7 @@ export type ComponentKeys = {
 };
 
 export type Components = {
-  [key: string]: ComponentType;
+  [key: string]: Component;
 };
 
 export type PolymorphicProps<T extends keyof ComponentKeys = keyof ComponentKeys> = {
@@ -43,8 +42,15 @@ export type ResourceProps = {
   resource?: string;
 };
 
-export type ShapesProps = {
+export type VisualProps = {
+  // Shape defines the component's border radius and overall form
   shape?: 'none' | 'circular' | 'rounded' | 'square' | 'pill' | 'rectangular' | 'text';
+
+  // Color defines the component's color scheme
+  color?: 'default' | 'primary' | 'secondary' | 'accent' | 'error' | 'warning' | 'info' | 'success' | string;
+
+  // Variant defines how the component is filled/outlined
+  variant?: 'light' | 'dark' | 'outlined' | 'filled' | 'text';
 };
 
 export type ValidationProps = {
@@ -52,9 +58,13 @@ export type ValidationProps = {
 };
 
 /*** WEB SPECIFIC ***/
-export type Component = PolymorphicProps & ActionProps & A11yProps & {
+export type ComponentProps = PolymorphicProps & ActionProps & A11yProps & {
   className?: string;
   style?: Style;
+};
+
+export type Intent = {
+  intent?: 'error' | 'warning' | 'info' | 'success' | 'neutral';
 };
 
 export type A11yProps = {
@@ -77,17 +87,12 @@ export type A11yProps = {
   ariaSelected?: boolean;       // For selectable elements
   autoFocus?: boolean;         // For focus management
   platform: 'web' | 'desktop' | 'console' | 'mobile';
-  role?: string;
+  role?: 'alert' | 'status' | 'log' | 'marquee' | 'timer';
   tabIndex?: number;
   focusable?: boolean;         // Whether element can receive focus
   focusVisible?: boolean;      // Whether element shows focus ring
   focusWithin?: boolean;       // Whether element contains focused element
-  severity?: 'error' | 'warning' | 'info' | 'success';
 };
-
-export type Colorized = {
-  color?: 'default' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success' | string;
-}
 
 /*** ATOMS ***/
 
@@ -102,9 +107,8 @@ export type Colorized = {
  * - Badge/Chip: <Button shape="pill" label="New" />
  * - Tag: <Button variant="outlined" label="Tag" />
  */
-export type ButtonProps = Component & Colorized & ResourceProps & ShapesProps & {
+export type ButtonProps = ComponentProps & Intent & VisualProps & ResourceProps & {
   // label?: string;    // Direct prop (for simple text)
-  variant?: 'text' | 'contained' | 'outlined';
   size?: 'small' | 'medium' | 'large';
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
@@ -128,9 +132,9 @@ export type LinkProps = Omit<ButtonProps, 'variant'> & {
  * Text Props, as also Typography, Alert
  * Used for formatting text, not interactive
  */
-export type TextProps = Component & Colorized & {
+export type TextProps = ComponentProps & VisualProps & {
   children: string;
-  variant?: 'body1' | 'body2' | 'caption' | 'overline' | 'subtitle1' | 'subtitle2' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'contained' | 'outlined';
+  variant?: 'body1' | 'body2' | 'caption' | 'overline' | 'subtitle1' | 'subtitle2' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   align?: 'left' | 'center' | 'right';
   noWrap?: boolean;
   ellipsis?: boolean;
@@ -149,7 +153,7 @@ export type TextProps = Component & Colorized & {
  * - Date picker: <Input type="date" value="2024-03-20" />
  * - Rating: <Input type="rating" value={4} />
  */
-export type InputProps = Component & Colorized & {
+export type InputProps = ComponentProps & VisualProps & {
   max?: number;
   value: string;
   placeholder?: string;
@@ -162,7 +166,7 @@ export type InputProps = Component & Colorized & {
 };
 
 /** Progress Props, also act as Spinner/Loader Props */
-export type ProgressProps = Component & Colorized & {
+export type ProgressProps = ComponentProps & VisualProps & {
   value?: number;
   max?: number;
   variant?: 'determinate' | 'indeterminate';
@@ -170,13 +174,13 @@ export type ProgressProps = Component & Colorized & {
 };
 
 // /** Icon Props */
-// export type IconProps = Component & Colorized & ResourceProps & {
+// export type IconProps = ComponentProps & Styled & ResourceProps & {
 //   name: string;
 //   size?: number;
 // };
 
 // /** Image Props */
-// export type ImageProps = Component & Colorized & {
+// export type ImageProps = ComponentProps & Styled & {
 //   src: string;
 //   alt: string;
 //   width?: string | number;
@@ -193,7 +197,7 @@ export type ProgressProps = Component & Colorized & {
  * - Responsive: <Media src="photo.jpg" size={100} /> // uses aspect ratio
  * - Avatar: <Media src="avatar.jpg" shape="circular" />
  */
-export type MediaProps = Component & Colorized & ResourceProps & {
+export type MediaProps = ComponentProps & VisualProps & ResourceProps & {
   // type: 'icon' | 'image'; // detected by src or name
   // Common props
   size?: number; // if present, uses width and aspect-ratio to define height
@@ -205,11 +209,11 @@ export type MediaProps = Component & Colorized & ResourceProps & {
 };
 
 /** Divider Props */
-export type DividerProps = Component & {
+export type DividerProps = ComponentProps & {
   orientation?: 'horizontal' | 'vertical';
 };
 
-export type SkeletonProps = Component & ShapesProps & {
+export type SkeletonProps = ComponentProps & VisualProps & {
   width?: number | string;
   height?: number | string;
   animation?: 'pulse' | 'wave' | false;
@@ -218,7 +222,7 @@ export type SkeletonProps = Component & ShapesProps & {
 /*** MOLECULES ***/
 
 /** Card Props */
-export type CardProps = Component & {
+export type CardProps = ComponentProps & {
   header?: Slot;
   children?: Slot;
   footer?: Slot;
@@ -235,7 +239,7 @@ export type CardProps = Component & {
  * - Alert: <Modal type="alert" content="Error message" />
  * - Snackbar: <Modal type="snackbar" content="Operation completed" />
  */
-export type ModalProps = Component & {
+export type ModalProps = ComponentProps & {
   type: 'modal' | 'popover' | 'drawer' | 'tooltip' | 'snackbar' | 'alert' | 'dialog' | 'confirmation';
   open: boolean;
   title?: string; // Named slot
@@ -243,13 +247,13 @@ export type ModalProps = Component & {
   children?: Slot;
 };
 
-export type FormProps = Component & {
+export type FormProps = ComponentProps & {
   method?: 'get' | 'post';
   action?: string;
   encType?: string;
 };
 
-export type FieldProps = Component & {
+export type FieldProps = ComponentProps & {
   name: string;
   label?: string;
   required?: boolean;
@@ -259,21 +263,21 @@ export type FieldProps = Component & {
 };
 
 /** Form Group Props */
-export type FormGroupProps = Component & {
+export type FormGroupProps = ComponentProps & {
   children: Slot;
   label?: string;
   errorMessage?: string;
 };
 
 /** Tooltip Props */
-export type TooltipProps = Component & {
+export type TooltipProps = ComponentProps & {
   content: string;
   children: Slot;
   placement?: 'top' | 'right' | 'bottom' | 'left';
 };
 
 /** Table Props */
-export type TableProps = Component & {
+export type TableProps = ComponentProps & {
   headers: string[];
   rows: Array<Record<string, any>>;
 };
@@ -289,7 +293,7 @@ export type TableProps = Component & {
  * - Stepper: <List type="stepper" items={[{ label: "Step 1", completed: true }]} />
  * - Pagination: <List type="pagination" count={10} />
  */
-export type ListProps = Component & {
+export type ListProps = ComponentProps & {
   type?: 'default' | 'tabs' | 'accordion' | 'stepper' | 'pagination' | 'timeline' | 'carousel';
   items: Array<{
     content: Slot;
@@ -366,7 +370,7 @@ export type RatingProps = InputProps & {
  * Mix of Text, Button, Input, Progress, Rating.
  * Used for declare how to display data
  */
-export type DataDisplayProps = Component & {
+export type DataDisplayProps = ComponentProps & {
   type?: 'text' | 'button' | 'submit' | 'reset' | 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'month' | 'number' | 'password' | 'radio' | 'range' | 'rating' | 'search' | 'select' | 'tel' | 'text' | 'time' | 'url' |'week';
   variant?: 'body1' | 'body2' | 'caption' | 'overline' | 'subtitle1' | 'subtitle2' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'contained' | 'outlined';
 
@@ -377,7 +381,7 @@ export type DataDisplayProps = Component & {
   formatter?: (value: any) => string;
 };
 
-export type AlertProps = TextProps & Colorized & {
+export type AlertProps = TextProps & VisualProps & {
   type: 'alert';
   action?: Slot;
 };
@@ -389,25 +393,25 @@ export type FeedbackProps = ModalProps & AlertProps & {
 /*** ORGANISMS ***/
 
 /** Navbar Props */
-export type NavbarProps = Component & {
+export type NavbarProps = ComponentProps & {
   brand?: Slot;
   links: Array<{ label: string; href: string }>;
 };
 
 /** Sidebar Props */
-export type SidebarProps = Component & {
+export type SidebarProps = ComponentProps & {
   items: Array<{ icon?: Slot; label: string; href: string }>;
   open: boolean;
 };
 
 /** Footer Props */
-export type FooterProps = Component & {
+export type FooterProps = ComponentProps & {
   content: Slot;
   links?: Array<{ label: string; href: string }>;
 };
 
 /** Dashboard Props */
-export type DashboardProps = Component & {
+export type DashboardProps = ComponentProps & {
   header?: Slot;
   sidebar?: Slot;
   content: Slot;
@@ -427,7 +431,7 @@ export type DashboardProps = Component & {
  * - Box: <Layout type="box" padding={2} margin={1} />
  * - Paper: <Layout type="paper" elevation={2} />
  */
-export type LayoutProps = Component & {
+export type LayoutProps = ComponentProps & {
   type: 'container' | 'grid' | 'stack' | 'box' | 'paper';
   direction?: 'row' | 'column';
   spacing?: number;
@@ -438,7 +442,7 @@ export type LayoutProps = Component & {
 };
 
 /** Page Layout Props */
-export type PageLayoutProps = Component & {
+export type PageLayoutProps = ComponentProps & {
   navbar?: Slot;
   sidebar?: Slot;
   mainContent: Slot;
@@ -446,7 +450,7 @@ export type PageLayoutProps = Component & {
 };
 
 /** Email Template Props */
-export type EmailTemplateProps = Component & {
+export type EmailTemplateProps = ComponentProps & {
   header?: Slot;
   body: Slot;
   footer?: Slot;
@@ -454,17 +458,17 @@ export type EmailTemplateProps = Component & {
 
 /*** Effects ***/
 
-export type RippleProps = Component & {
+export type RippleProps = ComponentProps & {
   color?: string;
   duration?: number;
 };
 
-export type ShadowProps = Component & {
+export type ShadowProps = ComponentProps & {
   color?: string;
   intensity?: number;
 };
 
-export type TransitionProps = Component & {
+export type TransitionProps = ComponentProps & {
   type: 'fade' | 'slide' | 'zoom' | 'collapse';
   in?: boolean;
   timeout?: number;
@@ -477,7 +481,7 @@ export type AnimationProps = TransitionProps & {
   unmountOnExit?: boolean;
 };
 
-export type UtilityProps = Component & {
+export type UtilityProps = ComponentProps & {
   type: 'portal' | 'clickaway' | 'popper' | 'modal' | 'backdrop';
   container?: HTMLElement;
   disablePortal?: boolean;
