@@ -1,0 +1,12 @@
+{
+  "name": "types-components",
+  "version": "1.0.0",
+  "description": "Universal component props types",
+  "license": "MIT",
+  "author": "Arthur Janson",
+  "type": "commonjs",
+  "main": "types.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
