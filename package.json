@@ -5,8 +5,12 @@
   "license": "MIT",
   "author": "Arthur Janson",
   "type": "commonjs",
-  "main": "types.ts",
+  "main": "src/types.ts",
   "scripts": {
+    "prepare": "node generate-globals.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "typescript": "^5.8.3"
   }
 }
