@@ -1,6 +1,6 @@
 {
   "name": "types-components",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Universal component props types",
   "license": "MIT",
   "author": "Arthur Janson",
@@ -10,6 +10,10 @@
     "prepare": "node generate-globals.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "files": [
+    "src/types.ts",
+    "src/globals.d.ts"
+  ],
   "dependencies": {
     "typescript": "^5.8.3"
   }
