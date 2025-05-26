@@ -8,17 +8,17 @@
  * children = content?
  * default = text
  */
-type ComponentType = (props: any) => unknown;
-type Slot = ReturnType<ComponentType>;
-type Style = object;
+export type ComponentType = (props: any) => unknown;
+export type Slot = ReturnType<ComponentType>;
+export type Style = object;
 
-type CamelCase<S extends string> = S extends `${infer T}${infer U}`
+export type CamelCase<S extends string> = S extends `${infer T}${infer U}`
   ? T extends Lowercase<T>
     ? `${T}${CamelCase<Capitalize<U>>}`
     : `${Lowercase<T>}${CamelCase<U>}`
   : S;
 
-type ComponentKeys = {
+export type ComponentKeys = {
   [K in keyof Components as CamelCase<K & string>]: Components[K];
 };
 
@@ -32,8 +32,8 @@ export type PolymorphicProps<T extends keyof ComponentKeys = keyof ComponentKeys
 
 // type Action = () => void | Promise<void> //| (reducer: (state: object) => void) => void;
 // type Event = `${'click' | 'close' | 'open'}:${string}`; // Example: "click:doSomething", "close:completeAll"
-type Action = `${'click' | 'close' | 'open'}:${string}`; // Example: "click:doSomething", "close:completeAll"
-type Validation = `${'regex' | 'required' | 'minLength' | 'maxLength' | 'min' | 'max' | 'email' | 'url' | 'phone' | 'date' | 'time' | 'datetime-local' | 'month' | 'number' | 'password' | 'confirm' | 'custom'}:${string}`; // Example: "regex:[\\d]+", "required", "needs:name"
+export type Action = `${'click' | 'close' | 'open'}:${string}`; // Example: "click:doSomething", "close:completeAll"
+export type Validation = `${'regex' | 'required' | 'minLength' | 'maxLength' | 'min' | 'max' | 'email' | 'url' | 'phone' | 'date' | 'time' | 'datetime-local' | 'month' | 'number' | 'password' | 'confirm' | 'custom'}:${string}`; // Example: "regex:[\\d]+", "required", "needs:name"
 
 export type ActionProps = {
   actions?: Action[];
